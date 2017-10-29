@@ -8,14 +8,13 @@ function sendEmails() {
   var santaDataRange = sheet.getRange(2, 2, numRows, 2);
   var santaData = santaDataRange.getValues();
   var usedNumArr = [];
-  var randomNum = Math.floor(Math.random() * (5 - 0 + 1)) + 0;
-  
+  var randomNum = Math.floor(Math.random() * recipientData.length);
   
   for (i in santaData) {
-    while ((usedNumArr.indexOf(randomNum) > -1) || (i == randomNum)){
-      randomNum = Math.floor(Math.random() * (5 - 0 + 1)) + 0;
+    while (~usedNumArr.indexOf(randomNum) || (i == randomNum)){
+      randomNum = Math.floor(Math.random() * recipientData.length);
     }
-    usedNumArr = usedNumArr + randomNum;
+    usedNumArr.push(randomNum);
     //send email 
     var row = recipientData[randomNum];
     //var recepEmailAddress = row[1];
@@ -27,5 +26,4 @@ function sendEmails() {
     var emailAddress = santaData[i][1];
     MailApp.sendEmail(emailAddress, subject, message);
   }
-  
 }
