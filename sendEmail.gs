@@ -3,27 +3,33 @@ function sendEmails() {
   var startRow = 2;  // First row of data to process
   var numRows = 6;   // Number of rows to process
   
-  var recipientDataRange = sheet.getRange(startRow, 2, numRows, 3);
-  var recipientData = recipientDataRange.getValues();
-  var santaDataRange = sheet.getRange(2, 2, numRows, 2);
-  var santaData = santaDataRange.getValues();
+  var participantsRange = sheet.getRange(startRow, 2, numRows, 3);
+  var participants = participantsRange.getValues().map(function(p) {
+    return {
+      name: p[0],
+      email: p[1],
+      wishList: p[2]
+    };
+  });
   var usedNumArr = [];
-  var randomNum = Math.floor(Math.random() * recipientData.length);
+  var randomNum = Math.floor(Math.random() * participants.length);
   
-  for (var i = 0; i < santaData.length; i++) {
+  for (var i = 0; i < participants.length; i++) {
+    var santa = participants[i];
+    
     while (~usedNumArr.indexOf(randomNum) || (i == randomNum)){
-      randomNum = Math.floor(Math.random() * recipientData.length);
+      randomNum = Math.floor(Math.random() * participants.length);
     }
     usedNumArr.push(randomNum);
+    
     //send email 
-    var row = recipientData[randomNum];
+    var recipient = participants[randomNum];
     //var recepEmailAddress = row[1];
-    var recepName = row[0];
-    var recepList = row[2];
-    var santaName = santaData[i][0]
+    var recepName = recipient.name;
+    var recepList = recipient.wishList;
+    var santaName = santa.name;
     var message = "Yoyo " + santaName + "! You are the Secret Santa for " + recepName +"!. Reminder that the range is $15-$25. This is their wish list: \n" + recepList;
     var subject = "Your Team Us Secret Santa Is...(open to reveal)";
-    var emailAddress = santaData[i][1];
-    MailApp.sendEmail(emailAddress, subject, message);
+    MailApp.sendEmail(santa.email, subject, message);
   }
 }
