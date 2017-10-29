@@ -10,7 +10,7 @@ function sendEmails() {
   var usedNumArr = [];
   var randomNum = Math.floor(Math.random() * recipientData.length);
   
-  for (i in santaData) {
+  for (var i = 0; i < santaData.length; i++) {
     while (~usedNumArr.indexOf(randomNum) || (i == randomNum)){
       randomNum = Math.floor(Math.random() * recipientData.length);
     }
