@@ -1,15 +1,18 @@
 function sendEmails() {
   var sheet = SpreadsheetApp.getActiveSheet();
   var startRow = 2;  // First row of data to process
+  var startCol = 2; // The first column of data to process
   var numRows = 6;   // Number of rows to process
-  
-  var participantsRange = sheet.getRange(startRow, 2, numRows, 3);
+  var fields = ['name', 'email', 'wishList'];
+
+  var participantsRange = sheet.getRange(startRow, startCol, numRows, fields.length);
   var participants = participantsRange.getValues().map(function(p) {
-    return {
-      name: p[0],
-      email: p[1],
-      wishList: p[2]
-    };
+    var pObj = {};
+    for (var i = 0; i < fields.length; i++) {
+      var fieldName = fields[i];
+      pObj[fieldName] = p[i];
+    }
+    return pObj;
   });
   var usedNumArr = [];
   var randomNum = Math.floor(Math.random() * participants.length);
@@ -22,14 +25,15 @@ function sendEmails() {
     }
     usedNumArr.push(randomNum);
     
-    //send email 
     var recipient = participants[randomNum];
-    //var recepEmailAddress = row[1];
     var recepName = recipient.name;
     var recepList = recipient.wishList;
     var santaName = santa.name;
+    var santaEmail = santa.email;
+    
+    //send email
     var message = "Yoyo " + santaName + "! You are the Secret Santa for " + recepName +"!. Reminder that the range is $15-$25. This is their wish list: \n" + recepList;
     var subject = "Your Team Us Secret Santa Is...(open to reveal)";
-    MailApp.sendEmail(santa.email, subject, message);
+    MailApp.sendEmail(santaEmail, subject, message);
   }
 }
